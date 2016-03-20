@@ -84,15 +84,17 @@ int main(int argc, char **argv){
 
 	// after 10 successful 'b', print grid:
 	display(sweeper);
+	display(field);
 
 	// GAME ON!!  Keep going until an exit condition is met.
 	while(1){
+		fflush(stdin);
 		scanf("%c %d %d", &cmd, &x, &y);
 
 		if(cmd=='u'){
-			if(field[y+maxCols+x] != MINE && sweeper[y+maxCols+x] == COVERED){
-				sweeper[y+maxCols+x] = field[y+maxCols+x];
-			}else if(field[y+maxCols+x] == MINE){
+			if(field[y*maxCols+x] != MINE && sweeper[y*maxCols+x] == COVERED){
+				sweeper[y*maxCols+x] = field[y*maxCols+x];
+			}else if(field[y*maxCols+x] == MINE){
 				printf("lost");
 				exit(0);
 			}else{
@@ -102,8 +104,8 @@ int main(int argc, char **argv){
 			display(sweeper);
 		}
 		else if(cmd=='f'){
-			if(sweeper[y+maxCols+x] == COVERED){
-				sweeper[y+maxCols+x] = FLAG;
+			if(sweeper[y*maxCols+x] == COVERED){
+				sweeper[y*maxCols+x] = FLAG;
 			}else{
 				CleanExitError();
 			}
