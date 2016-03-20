@@ -8,6 +8,12 @@
 
 //char field[100*100];
 //char *ptrField = field;
+// declare some constants for width and height:
+int maxRows;
+int maxCols;
+
+// function declarations:
+
 
 int printGrid(char const *p, int rows, int cols){
 	printf("PRINTGRID: ptr: %p | x: %d | y: %d\n", p, rows, cols);
@@ -31,73 +37,74 @@ int initializeArr(char *p, int rows, int cols){
 	return 0;
 }
 
-int updateGridPlant(char *ptrGrid,int x, int y, int rows, int cols){
+int updateGridPlant(char *ptrGrid,int row, int col, int maxRows, int maxCols){
 	//  GRID
 	//  TL  TC  TR
 	//  L    *   R
 	//  BL  BC  BR
 	/*
 		Safety checks in place:
-			1.  Check edges (are we on an edge?)
-			2.  Check value (is there a bomb there?)
-			3.  
+			1.  Check if mine already place
+			2.  Check edges (are we on an edge?)
+			3.  Check value (is there a bomb there?)
 	*/
-	//x -= 1;
-	//y -= 1;
+	
+	if(ptrGrid[row*maxCols+col] == MINE){
+		//CleanExitError();
+	}
+	
 	// Left
-	if(x-1>0 && y-1>0){
+	if(col>0 && row>0){
 		//top
-		if(ptrGrid[(x-1)*cols+(y-1)] != MINE){
-			//ptrGrid[(x-1)*(cols+(y-1))] = 'c';
-			ptrGrid[(x-1)*cols+(y-1)] += 1;
+		if(ptrGrid[(row-1)*maxCols+(col-1)] != MINE){
+			ptrGrid[(row-1)*maxCols+(col-1)] += 1;
 		}
 	}
-	if(y-1>0){
+	if(col>0){
 		// centre
-		if(ptrGrid[(x)*cols+(y-1)] != MINE){
-			ptrGrid[(x)*cols+(y-1)] += 1;
+		if(ptrGrid[(row)*maxCols+(col-1)] != MINE){
+			ptrGrid[(row)*maxCols+(col-1)] += 1;
 		}	
 	}
-	if(x+1<rows && y-1<cols){
+	if(col>0 && row<maxRows-1){
 		//bottom
-		if(ptrGrid[(x+1)*cols+(y-1)] != MINE){
-			ptrGrid[(x+1)*cols+(y-1)] += 1;
+		if(ptrGrid[(row+1)*maxCols+(col-1)] != MINE){
+			ptrGrid[(row+1)*maxCols+(col-1)] += 1;
 		}	
 	}
 	// Centre
-	if(x-1>0){
+	if(row>0){
 		//top
-		if(ptrGrid[(x-1)*cols+(y)] != MINE){
-			ptrGrid[(x-1)*cols+(y)] += 1;
+		if(ptrGrid[(row-1)*maxCols+(col)] != MINE){
+			ptrGrid[(row-1)*maxCols+(col)] += 1;
 		}
 	}
-	if(x+1<rows){
+	if(row<maxRows-1){
 		// bottom
-		if(ptrGrid[(x+1)*cols+(y)] != MINE){
-			ptrGrid[(x+1)*cols+(y)] += 1;
+		if(ptrGrid[(row+1)*maxCols+(col)] != MINE){
+			ptrGrid[(row+1)*maxCols+(col)] += 1;
 		}
 	}
 	// Right
-	if(x-1>0 && y+1<cols){
+	if(row>0 && col<maxCols-1){
 		//top
-		if(ptrGrid[(x-1)*cols+(y+1)] != MINE){
-			ptrGrid[(x-1)*cols+(y+1)] += 1;
-			printf("%d | %d\n", x, y);
+		if(ptrGrid[(row-1)*maxCols+(col+1)] != MINE){
+			ptrGrid[(row-1)*maxCols+(col+1)] += 1;
 		}
 	}
-	if(y+1<cols){
+	if(col<maxCols-1){
 		// centre
-		if(ptrGrid[(x)*cols+(y+1)] != MINE){
-			ptrGrid[(x)*cols+(y+1)] += 1;
+		if(ptrGrid[(row)*maxCols+(col+1)] != MINE){
+			ptrGrid[(row)*maxCols+(col+1)] += 1;
 		}
 	}
-	if(x+1<rows && y+1<cols){
+	if(row<maxRows-1 && col<maxCols-1){
 		//bottom
-		if(ptrGrid[(x+1)*cols+(y+1)] != MINE){
-			ptrGrid[(x+1)*cols+(y+1)] += 1;
+		if(ptrGrid[(row+1)*maxCols+(col+1)] != MINE){
+			ptrGrid[(row+1)*maxCols+(col+1)] += 1;
 		}
 	}
-	ptrGrid[x*cols+y] = MINE;
+	ptrGrid[row*maxCols+col] = MINE;
 	return 0;
 }
 
@@ -130,18 +137,18 @@ int main(int argc, char **argv){
 	// declare array (x:cols:width, y:rows:height):
 	char field[y * x];
 	
+	// declare some constants for width and height:
+	maxRows = y;
+	maxCols = x;
+	
 	// initialize array:
-	initializeArr(field,x,y);
+	initializeArr(field,maxRows,maxCols);
 	
 	// DEBUG: print array:
-	printGrid(field,x,y);
+	printGrid(field,maxRows,maxCols);
 	
 	// print command:
 	printf("%c %d %d\n", cmd, x, y);
-
-	// declare some constants for width and height:
-	int const numRows = y;
-	int const numCols = x;
 
 	// second is 10 times 'b':
 	int count = 0;
@@ -149,15 +156,15 @@ int main(int argc, char **argv){
 	while (count < 10){
 		fflush(stdin);
 		scanf("%c %d %d", &cmd, &x, &y);
-		if(cmd=='b'){
-			// updated grid:
-			updateGridPlant(field,x,y,numRows,numCols);
+		if(cmd=='b' && x>-1 && y>-1 && x<maxCols && y<maxRows){
+			// updated grid (row major)
+			updateGridPlant(field,y,x,maxRows,maxCols);
 			
 			// print command:
 			printf("%c %d %d\n", cmd, x, y);
 			
 			// DEBUG: print array:	
-			printGrid(field,numRows,numCols);
+			printGrid(field,maxRows,maxCols);
 			count++;
 		}else{
 			CleanExitError();
