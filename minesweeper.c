@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 
 	// after 10 successful 'b', print grid:
 	display(sweeper);
-	display(field);
+	//display(field);
 
 	// GAME ON!!  Keep going until an exit condition is met.
 	while(1){
