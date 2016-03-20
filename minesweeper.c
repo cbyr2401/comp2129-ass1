@@ -42,8 +42,8 @@ int updateGridPlant(char *ptrGrid,int x, int y, int rows, int cols){
 			2.  Check value (is there a bomb there?)
 			3.  
 	*/
-	x -= 1;
-	y -= 1;
+	//x -= 1;
+	//y -= 1;
 	// Left
 	if(x-1>0 && y-1>0){
 		//top
@@ -127,8 +127,8 @@ int main(int argc, char **argv){
 		// catch error conditions...
 		CleanExitError();
 	}
-	// declare array:
-	char field[x * y];
+	// declare array (x:cols:width, y:rows:height):
+	char field[y * x];
 	
 	// initialize array:
 	initializeArr(field,x,y);
@@ -140,8 +140,8 @@ int main(int argc, char **argv){
 	printf("%c %d %d\n", cmd, x, y);
 
 	// declare some constants for width and height:
-	int const numRows = x;
-	int const numCols = y;
+	int const numRows = y;
+	int const numCols = x;
 
 	// second is 10 times 'b':
 	int count = 0;
