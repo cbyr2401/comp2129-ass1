@@ -2,19 +2,23 @@
 #include <stdlib.h>
 
 #define COVERED 42
-#define FLAG 102
 #define MINE 66
-#define SIZE 10
+#define FLAG 102
 
-//char field[100*100];
-//char *ptrField = field;
+#define ZERO 48
+
+#define CORNER 43
+#define HEDGE 45
+#define VEDGE 124
+
 // declare some constants for width and height:
 int maxRows;
 int maxCols;
 
 // function declarations:
-void initializeArr(char *p);
+void initializeArr(char *p, char initial);
 void plantMine(char *p, int row, int col);
+void display(char const *p);
 void printGridDebug(char const *p);
 void CleanExitError(void);
 
@@ -39,19 +43,22 @@ int main(int argc, char **argv){
 		// catch error conditions...
 		CleanExitError();
 	}
-	// declare array (x:cols:width, y:rows:height):
-	char field[y * x];
-	
 	// declare GLOBAL constants for 
 	//  maximum number of Rows and Columns:
 	maxRows = y;
 	maxCols = x;
 	
+	// declare array (x:cols:width, y:rows:height):
+	char field[maxRows * maxCols];
+	char sweeper[maxRows * maxCols];
+
 	// initialize array:
-	initializeArr(field);
+	initializeArr(field,ZERO);
+	initializeArr(sweeper,COVERED);
 	
 	// DEBUG: print array:
 	//printGridDebug(field);
+	//display(sweeper);
 	
 	// print command:
 	printf("%c %d %d\n", cmd, x, y);
@@ -77,7 +84,7 @@ int main(int argc, char **argv){
 	}
 
 	// after 10 successful 'b', print grid:
-	//printGrid();
+	display(sweeper);
 
 	// GAME ON!!  Keep going until an exit condition is met.
 	while(1){
@@ -115,10 +122,10 @@ void printGridDebug(char const *p){
 }
 
 // function used to fill array with '0'
-void initializeArr(char *p){
+void initializeArr(char *p, char initial){
 	for(int i=0; i<maxRows; i++){
 		for(int j=0; j<maxCols; j++){
-			p[i * maxCols+j] = 48;
+			p[i * maxCols+j] = initial;
 		}
 	}
 }
@@ -190,6 +197,37 @@ void plantMine(char *ptrGrid,int row, int col){
 	ptrGrid[row*maxCols+col] = MINE;
 }
 
+// function to display the minesweeper game board.
+void display(char const *p){
+	
+	// top row:
+	putchar(CORNER);
+	for(int c = 0; c < maxCols; c++){
+		putchar(HEDGE);
+	}
+	putchar(CORNER);
+	printf("\n");
+	
+	// other rows:
+	for(int i=0; i<maxRows; i++){
+		printf("%c", VEDGE);
+		for(int j=0; j<maxCols; j++){
+			printf("%c", p[i * maxCols+j]);
+		}
+		printf("%c\n", VEDGE);
+	}
+	
+	//bottom row:
+	putchar(CORNER);
+	for(int c = 0; c < maxCols; c++){
+		putchar(HEDGE);
+	}
+	putchar(CORNER);
+	printf("\n");
+	
+	// flush output:
+	fflush(stdout);
+}
 
 // function to exit program.
 void CleanExitError(void){
