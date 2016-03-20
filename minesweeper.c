@@ -43,8 +43,7 @@ int main(int argc, char **argv){
 		// catch error conditions...
 		CleanExitError();
 	}
-	// declare GLOBAL constants for 
-	//  maximum number of Rows and Columns:
+	// declare GLOBAL constants for maximum Rows and Columns:
 	maxRows = y;
 	maxCols = x;
 	
@@ -52,7 +51,7 @@ int main(int argc, char **argv){
 	char field[maxRows * maxCols];
 	char sweeper[maxRows * maxCols];
 
-	// initialize array:
+	// initialize arrays:
 	initializeArr(field,ZERO);
 	initializeArr(sweeper,COVERED);
 	
@@ -91,19 +90,28 @@ int main(int argc, char **argv){
 		scanf("%c %d %d", &cmd, &x, &y);
 
 		if(cmd=='u'){
-			//updateGrid();
-			checkGrid();
+			if(field[y+maxCols+x] != MINE && sweeper[y+maxCols+x] == COVERED){
+				sweeper[y+maxCols+x] = field[y+maxCols+x];
+			}else if(field[y+maxCols+x] == MINE){
+				printf("lost");
+				exit(0);
+			}else{
+				CleanExitError();
+			}
 			printf("%c %d %d\n", cmd, x, y);
-			//printGrid(pfield);
+			display(sweeper);
 		}
 		else if(cmd=='f'){
-			//updateGrid();
-			checkGrid();
+			if(sweeper[y+maxCols+x] == COVERED){
+				sweeper[y+maxCols+x] = FLAG;
+			}else{
+				CleanExitError();
+			}
 			printf("%c %d %d\n", cmd, x, y);
-			//printGrid(pfield);
+			display(sweeper);
 		}
 		else{
-			printf("error");
+			CleanExitError();
 		}
 	}
 
