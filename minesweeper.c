@@ -4,15 +4,16 @@
 #define COVERED 42
 #define FLAG 102
 #define MINE 66
+#define SIZE 10
 
 //char field[100*100];
 //char *ptrField = field;
 
-int printGrid(char const *p, int w, int h){
-	printf("PRINTGRID: ptr: %p | x: %d | y: %d\n", p, w, h);
-	for(int i=0; i<w; i++){
-		for(int j=0; j<h; j++){
-			printf("%c", p[i * h+j]);
+int printGrid(char const *p, int rows, int cols){
+	printf("PRINTGRID: ptr: %p | x: %d | y: %d\n", p, rows, cols);
+	for(int i=0; i<rows; i++){
+		for(int j=0; j<cols; j++){
+			printf("%c", p[i * cols+j]);
 		}
 		printf("\n");
 	}
@@ -20,17 +21,17 @@ int printGrid(char const *p, int w, int h){
 	return 0;
 }
 
-int initializeArr(char *p, int w, int h){
+int initializeArr(char *p, int rows, int cols){
 	
-	for(int i=0; i<w; i++){
-		for(int j=0; j<h; j++){
-			p[i * h+j] = 48;
+	for(int i=0; i<rows; i++){
+		for(int j=0; j<cols; j++){
+			p[i * cols+j] = 48;
 		}
 	}
 	return 0;
 }
 
-int updateGridPlant(char *ptrGrid,int x,int y,int width,int height){
+int updateGridPlant(char *ptrGrid,int x, int y, int rows, int cols){
 	//  GRID
 	//  TL  TC  TR
 	//  L    *   R
@@ -46,56 +47,57 @@ int updateGridPlant(char *ptrGrid,int x,int y,int width,int height){
 	// Left
 	if(x-1>0 && y-1>0){
 		//top
-		if(ptrGrid[(x-1)*(height+(y-1))] != MINE){
-			ptrGrid[(x-1)*(height+(y-1))] = 'c';
+		if(ptrGrid[(x-1)*cols+(y-1)] != MINE){
+			//ptrGrid[(x-1)*(cols+(y-1))] = 'c';
+			ptrGrid[(x-1)*cols+(y-1)] += 1;
 		}
 	}
-	if(x-1>0){
+	if(y-1>0){
 		// centre
-		if(ptrGrid[(x-1)*(height+y)] != MINE){
-			ptrGrid[(x-1)*(height+y)] += 3;
+		if(ptrGrid[(x)*cols+(y-1)] != MINE){
+			ptrGrid[(x)*cols+(y-1)] += 1;
 		}	
 	}
-	if(x-1>0 && y+1<height){
+	if(x+1<rows && y-1<cols){
 		//bottom
-		if(ptrGrid[(x-1)*(height+(y+1))] != MINE){
-			ptrGrid[(x-1)*(height+(y+1))] += 4;
+		if(ptrGrid[(x+1)*cols+(y-1)] != MINE){
+			ptrGrid[(x+1)*cols+(y-1)] += 1;
 		}	
 	}
 	// Centre
-	if(y-1>0){
+	if(x-1>0){
 		//top
-		if(ptrGrid[(x)*(height+(y-1))] != MINE){
-			ptrGrid[(x)*(height+(y-1))] += 5;
+		if(ptrGrid[(x-1)*cols+(y)] != MINE){
+			ptrGrid[(x-1)*cols+(y)] += 1;
 		}
 	}
-	if(y+1<height){
+	if(x+1<rows){
 		// bottom
-		if(ptrGrid[(x)*(height+(y+1))] != MINE){
-			ptrGrid[(x)*(height+(y+1))] += 6;
+		if(ptrGrid[(x+1)*cols+(y)] != MINE){
+			ptrGrid[(x+1)*cols+(y)] += 1;
 		}
 	}
 	// Right
-	if(x+1<width && y-1>0){
+	if(x-1>0 && y+1<cols){
 		//top
-		if(ptrGrid[(x+1)*(height+(y-1))] != MINE){
-			ptrGrid[(x+1)*(height+(y-1))] += 7;
+		if(ptrGrid[(x-1)*cols+(y+1)] != MINE){
+			ptrGrid[(x-1)*cols+(y+1)] += 1;
+			printf("%d | %d\n", x, y);
 		}
 	}
-	if(x+1<width){
+	if(y+1<cols){
 		// centre
-		if(ptrGrid[(x+1)*(height+y)] != MINE){
-			ptrGrid[(x+1)*(height+y)] += 8;
+		if(ptrGrid[(x)*cols+(y+1)] != MINE){
+			ptrGrid[(x)*cols+(y+1)] += 1;
 		}
 	}
-	if(x+1<width && y+1<height){
+	if(x+1<rows && y+1<cols){
 		//bottom
-		if(ptrGrid[(x+1)*(height+(y+1))] != MINE){
-			ptrGrid[(x+1)*(height+(y+1))] += 9;
+		if(ptrGrid[(x+1)*cols+(y+1)] != MINE){
+			ptrGrid[(x+1)*cols+(y+1)] += 1;
 		}
 	}
-	ptrGrid[x*height+y] = 'b';
-	ptrGrid[x*height+1] = 'm';
+	ptrGrid[x*cols+y] = MINE;
 	return 0;
 }
 
@@ -138,8 +140,8 @@ int main(int argc, char **argv){
 	printf("%c %d %d\n", cmd, x, y);
 
 	// declare some constants for width and height:
-	int const width = x;
-	int const height = y;
+	int const numRows = x;
+	int const numCols = y;
 
 	// second is 10 times 'b':
 	int count = 0;
@@ -148,14 +150,14 @@ int main(int argc, char **argv){
 		fflush(stdin);
 		scanf("%c %d %d", &cmd, &x, &y);
 		if(cmd=='b'){
-			updateGridPlant(field,x,y,width,height);
+			// updated grid:
+			updateGridPlant(field,x,y,numRows,numCols);
+			
+			// print command:
 			printf("%c %d %d\n", cmd, x, y);
 			
-			//printf("ptr: %p | width: %d | height: %d\n", ptrField, width, height);
-			//printf("-------------------------------------\n");
-			
 			// DEBUG: print array:	
-			printGrid(field,width,height);
+			printGrid(field,numRows,numCols);
 			count++;
 		}else{
 			CleanExitError();
