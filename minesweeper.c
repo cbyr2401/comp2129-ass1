@@ -94,27 +94,36 @@ int main(int argc, char **argv){
 		if(cmd=='u'){
 			if(field[y*maxCols+x] != MINE && sweeper[y*maxCols+x] == COVERED){
 				sweeper[y*maxCols+x] = field[y*maxCols+x];
+				count++;
 			}else if(field[y*maxCols+x] == MINE){
 				printf("lost\n");
 				exit(0);
 			}else{
 				CleanExitError();
 			}
-			printf("%c %d %d\n", cmd, x, y);
-			display(sweeper);
 		}
 		else if(cmd=='f'){
-			if(sweeper[y*maxCols+x] == COVERED){
+			// TODO: check if the player is going to lose by placing incorrect flag??
+			if(sweeper[y*maxCols+x] == COVERED && sweeper[y*maxCols+x] == MINE){
 				sweeper[y*maxCols+x] = FLAG;
+				count++;
 			}else{
 				CleanExitError();
 			}
-			printf("%c %d %d\n", cmd, x, y);
-			display(sweeper);
 		}
 		else{
 			CleanExitError();
 		}
+		
+		printf("%c %d %d\n", cmd, x, y);
+		
+		if(count == (maxCols*maxRows)){
+			printf("won\n");
+			exit(0);
+		}else{
+			display(sweeper);
+		}
+		
 	}
 
 	return 0;
