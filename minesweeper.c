@@ -67,7 +67,8 @@ int main(int argc, char **argv){
 	
 	while (count < 10){
 		fflush(stdin);
-		scanf("%c %d %d", &cmd, &x, &y);
+		scanf(" %c %d %d", &cmd, &x, &y);
+		
 		if(cmd=='b' && x>-1 && y>-1 && x<maxCols && y<maxRows){
 			// updated grid (row major)
 			plantMine(field,y,x);
@@ -89,13 +90,12 @@ int main(int argc, char **argv){
 	// GAME ON!!  Keep going until an exit condition is met.
 	while(1){
 		fflush(stdin);
-		scanf("%c %d %d", &cmd, &x, &y);
-
+		scanf(" %c %d %d", &cmd, &x, &y);
 		if(cmd=='u'){
 			if(field[y*maxCols+x] != MINE && sweeper[y*maxCols+x] == COVERED){
 				sweeper[y*maxCols+x] = field[y*maxCols+x];
 			}else if(field[y*maxCols+x] == MINE){
-				printf("lost");
+				printf("lost\n");
 				exit(0);
 			}else{
 				CleanExitError();
@@ -148,9 +148,8 @@ void plantMine(char *ptrGrid,int row, int col){
 			2.  Check edges (are we on an edge?)
 			3.  Check value (is there a bomb there?)
 	*/
-	
 	if(ptrGrid[row*maxCols+col] == MINE){
-		//CleanExitError();
+		CleanExitError();
 	}
 	
 	// Left
@@ -241,6 +240,6 @@ void display(char const *p){
 
 // function to exit program.
 void CleanExitError(void){
-	printf("error");
+	printf("error\n");
 	exit(0);
 }
