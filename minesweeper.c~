@@ -19,7 +19,7 @@ int maxCols;
 void initializeArr(char *p, char initial);
 void plantMine(char *p, int row, int col);
 void display(char const *p);
-int check(char const *f, char const *s);
+int check(char const *f, char const *s)
 void printGridDebug(char const *p);
 void CleanExitError(void);
 
