@@ -94,6 +94,7 @@ int main(int argc, char **argv){
 				sweeper[y*maxCols+x] = field[y*maxCols+x];
 				count++;
 			}else if(field[y*maxCols+x] == MINE){
+				printf("%c %d %d\n", cmd, x, y);
 				printf("lost\n");
 				exit(0);
 			}else{

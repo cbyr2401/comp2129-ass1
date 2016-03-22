@@ -1,0 +1,11 @@
+echo "MINSWEEPER TESTING SCRIPT";
+echo "If there is no output, all tests passed successfully.";
+echo "running tests...";
+
+../minesweeper < not-enough-mines-1.in | diff - not-enough-mines-1.out
+../minesweeper < not-enough-mines-2.in | diff - not-enough-mines-2.out
+../minesweeper < not-enough-mines-3.in | diff - not-enough-mines-3.out
+../minesweeper < not-enough-mines-8.in | diff - not-enough-mines-8.out
+../minesweeper < not-enough-mines-9.in | diff - not-enough-mines-9.out
+
+echo "testing completed."

@@ -19,7 +19,7 @@ int maxCols;
 void initializeArr(char *p, char initial);
 void plantMine(char *p, int row, int col);
 void display(char const *p);
-int check(char const *f, char const *s)
+int check(char const *f, char const *s);
 void printGridDebug(char const *p);
 void CleanExitError(void);
 
@@ -94,6 +94,7 @@ int main(int argc, char **argv){
 				sweeper[y*maxCols+x] = field[y*maxCols+x];
 				count++;
 			}else if(field[y*maxCols+x] == MINE){
+				printf("%c %d %d\n", cmd, x, y);
 				printf("lost\n");
 				exit(0);
 			}else{
@@ -114,7 +115,7 @@ int main(int argc, char **argv){
 			CleanExitError();
 		}
 		
-		printf("%c %d %d\n", cmd, x, y);
+		
 		display(sweeper);
 		if(count == (maxCols*maxRows)){
 			// check here if check at end.
