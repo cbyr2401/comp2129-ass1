@@ -1,3 +1,8 @@
+/**
+ * 	COMP2129 Assignment 1
+ * 	Cian Byrne
+ *	cbyr2401
+ */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +16,7 @@
 #define HEDGE 45
 #define VEDGE 124
 
-// declare some constants for width and height:
+// declare sosme constants for width and height:
 int maxRows;
 int maxCols;
 
@@ -69,12 +74,12 @@ int main(int argc, char **argv){
 		if(cmd=='b' && x>-1 && y>-1 && x<maxCols && y<maxRows){
 			// updated grid (row major)
 			plantMine(field,y,x);
+
+			// increment count:
+			count++;
 			
 			// print command:
 			printf("%c %d %d\n", cmd, x, y);
-			
-			// increment count:
-			count++;
 		}else{
 			CleanExitError();
 		}
@@ -86,37 +91,59 @@ int main(int argc, char **argv){
 
 	// GAME ON!!  Keep going until an exit condition is met.
 	count = 0;
+	int flag_count = 0;
 	while(1){
 		fflush(stdin);
 		scanf(" %c %d %d", &cmd, &x, &y);
 		if(cmd=='u'){
 			if(field[y*maxCols+x] != MINE && sweeper[y*maxCols+x] == COVERED){
+				// move value fto game surface.
 				sweeper[y*maxCols+x] = field[y*maxCols+x];
 				count++;
+				
+				// output:
+				printf("%c %d %d\n", cmd, x, y);
+				display(sweeper);
 			}else if(field[y*maxCols+x] == MINE){
 				printf("%c %d %d\n", cmd, x, y);
 				printf("lost\n");
 				exit(0);
 			}else{
+				// incorrect move, exit immediately.
 				CleanExitError();
 			}
 		}
 		else if(cmd=='f'){
-			// TODO: check if the player is going to lose by placing incorrect flag??
-			// depending on specs: check here for exit immediately && field[y*maxCols+x] == MINE
-			if(sweeper[y*maxCols+x] == COVERED){
+			if(sweeper[y*maxCols+x] == MINE|| sweeper[y*maxCols+x] == COVERED){
+				// flag square
 				sweeper[y*maxCols+x] = FLAG;
+				
+				// increment counters:
 				count++;
+				flag_count++;
+				
+				if(flag_count>10){
+					// too many flags placed, exit.
+					CleanExitError();
+				}
+				
+				// output:
+				printf("%c %d %d\n", cmd, x, y);
+				display(sweeper);
 			}else{
+				// incorrect move, exit immediately.
 				CleanExitError();
 			}
 		}
 		else{
+			// incorrect move, exit immediately.
 			CleanExitError();
 		}
 		
-		printf("%c %d %d\n", cmd, x, y);
-		display(sweeper);
+		//printf("%c %d %d\n", cmd, x, y);
+		//display(sweeper);
+		
+		// check win conditions:
 		if(count == (maxCols*maxRows)){
 			// check here if check at end.
 			if(check(field,sweeper)==0){
@@ -132,7 +159,10 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-// function used to check that mines are in correct location.
+/*
+	DEBUG ONLY: prints out grid with all squares uncovered.
+	Used to check that mines are in correct location.
+*/
 void printGridDebug(char const *p){
 	for(int i=0; i<maxRows; i++){
 		for(int j=0; j<maxCols; j++){
@@ -143,7 +173,10 @@ void printGridDebug(char const *p){
 	fflush(stdout);
 }
 
-// function used to fill array with '0'
+
+/*
+	Initialize 2D matrix array (given as pointer) with given initial value.
+*/
 void initializeArr(char *p, char initial){
 	for(int i=0; i<maxRows; i++){
 		for(int j=0; j<maxCols; j++){
@@ -152,14 +185,15 @@ void initializeArr(char *p, char initial){
 	}
 }
 
-// function to plant a mine with a few safety checks.
+/*
+	Plants a mine and increments squares around mine location.
+	Method for each sqaure:
+		1) Check if mine already place
+		2) Check edges (are we on an edge?)
+		3) Check value (is there a bomb there?)
+*/
 void plantMine(char *ptrGrid,int row, int col){
-	/*
-		Safety checks in place:
-			1.  Check if mine already place
-			2.  Check edges (are we on an edge?)
-			3.  Check value (is there a bomb there?)
-	*/
+	// check if there is already a mine in that square
 	if(ptrGrid[row*maxCols+col] == MINE){
 		CleanExitError();
 	}
@@ -218,9 +252,20 @@ void plantMine(char *ptrGrid,int row, int col){
 	ptrGrid[row*maxCols+col] = MINE;
 }
 
-// function to display the minesweeper game board.
+/*
+	Displays the grid corresponding the the specification:
+		+----+
+		|****|
+		|****|
+		|****|
+		|****|
+		+----+
+	Where:
+		CORNER = '+'
+		VEDGE  = '|'
+		HEDGE  = '-'		
+*/
 void display(char const *p){
-	
 	// top row:
 	putchar(CORNER);
 	for(int c = 0; c < maxCols; c++){
@@ -229,7 +274,7 @@ void display(char const *p){
 	putchar(CORNER);
 	printf("\n");
 	
-	// other rows:
+	// middle rows:
 	for(int i=0; i<maxRows; i++){
 		printf("%c", VEDGE);
 		for(int j=0; j<maxCols; j++){
@@ -251,7 +296,13 @@ void display(char const *p){
 }
 
 
-// check to see if player has won game.
+/* 
+	Check to see if player has won the game:
+	Win conditions:
+		1) All squares visited
+		2) Flags in correct positions
+		3) All squares have been uncovered
+*/
 int check(char const *f, char const *s){
 	for(int i=0; i<maxRows; i++){
 		for(int j=0; j<maxCols; j++){
@@ -270,7 +321,11 @@ int check(char const *f, char const *s){
 	return 0;
 }
 
-// function to exit program.
+/*
+	Cleanly exits program:
+		1) prints "error"
+		2) exits immediately
+*/
 void CleanExitError(void){
 	printf("error\n");
 	exit(0);
