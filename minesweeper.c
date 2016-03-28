@@ -10,11 +10,12 @@
 #define MINE 66
 #define FLAG 102
 
-#define ZERO 48
-
 #define CORNER 43
 #define HEDGE 45
 #define VEDGE 124
+#define NEWLINE 10
+
+#define ZERO 48
 
 // declare sosme constants for width and height:
 int maxRows;
@@ -25,9 +26,9 @@ void initializeArr(char *p, char initial);
 void plantMine(char *p, int row, int col);
 void display(char const *p);
 int check(char const *f, char const *s);
-void printGridDebug(char const *p);
 void CleanExitError(void);
-
+void CleanExitLost(void);
+void printGridDebug(char const *p);
 
 int main(int argc, char **argv){
 	int x,y;
@@ -45,7 +46,7 @@ int main(int argc, char **argv){
 		// catch error conditions...
 		CleanExitError();
 	}
-	// declare GLOBAL constants for maximum Rows and Columns:
+	// set GLOBAL constants for maximum Rows and Columns:
 	maxRows = y;
 	maxCols = x;
 	
@@ -57,15 +58,11 @@ int main(int argc, char **argv){
 	initializeArr(field,ZERO);
 	initializeArr(sweeper,COVERED);
 	
-	// DEBUG: print array:
-	//printGridDebug(field);
-	//display(sweeper);
-	
 	// print command:
 	printf("%c %d %d\n", cmd, x, y);
 
 	// second is 10 times 'b':
-	for(int count=0;count < 10;count++){
+	for(int count=0; count < 10; count++){
 		fflush(stdin);
 		scanf(" %c %d %d", &cmd, &x, &y);
 		
@@ -75,35 +72,35 @@ int main(int argc, char **argv){
 			
 			// print command:
 			printf("%c %d %d\n", cmd, x, y);
-		}else{
+		}
+		else{
 			CleanExitError();
 		}
 	}
 
 	// after 10 successful 'b', print grid:
 	display(sweeper);
-	//display(field);
 
 	// GAME ON!!  Keep going until an exit condition is met.
-	int count = 0;
 	int flag_count = 0;
-	while(1){
+	
+	for(int count=0; count < maxRows * maxCols; count++){
 		fflush(stdin);
 		scanf(" %c %d %d", &cmd, &x, &y);
 		if(cmd=='u'){
 			if(field[y*maxCols+x] != MINE && sweeper[y*maxCols+x] == COVERED){
-				// move value fto game surface.
-				sweeper[y*maxCols+x] = field[y*maxCols+x];
-				count++;
-				
+				// move value to game surface.
+				sweeper[y*maxCols+x] = field[y*maxCols+x];				
 				// output:
 				printf("%c %d %d\n", cmd, x, y);
 				display(sweeper);
-			}else if(field[y*maxCols+x] == MINE){
+			}
+			else if(field[y*maxCols+x] == MINE){
+				// player uncovered a mine and has lost.
 				printf("%c %d %d\n", cmd, x, y);
-				printf("lost\n");
-				exit(0);
-			}else{
+				CleanExitLost();
+			}
+			else{
 				// incorrect move, exit immediately.
 				CleanExitError();
 			}
@@ -113,8 +110,7 @@ int main(int argc, char **argv){
 				// flag square
 				sweeper[y*maxCols+x] = FLAG;
 				
-				// increment counters:
-				count++;
+				// increment flags:
 				flag_count++;
 				
 				if(flag_count>10){
@@ -125,7 +121,8 @@ int main(int argc, char **argv){
 				// output:
 				printf("%c %d %d\n", cmd, x, y);
 				display(sweeper);
-			}else{
+			}
+			else{
 				// incorrect move, exit immediately.
 				CleanExitError();
 			}
@@ -133,22 +130,15 @@ int main(int argc, char **argv){
 		else{
 			// incorrect move, exit immediately.
 			CleanExitError();
-		}
-		
-		//printf("%c %d %d\n", cmd, x, y);
-		//display(sweeper);
-		
-		// check win conditions:
-		if(count == (maxCols*maxRows)){
-			// check here if check at end.
-			if(check(field,sweeper)==0){
-				printf("won\n");
-				exit(0);
-			}else{
-				printf("lost\n");
-				exit(0);
-			}
 		}		
+	}
+	// check win conditions:
+	if(check(field,sweeper)==0){
+		printf("won\n");
+		exit(0);
+	}
+	else{
+		CleanExitLost();
 	}
 
 	return 0;
@@ -244,6 +234,7 @@ void plantMine(char *ptrGrid,int row, int col){
 			ptrGrid[(row+1)*maxCols+(col+1)] += 1;
 		}
 	}
+	// plant the mine...
 	ptrGrid[row*maxCols+col] = MINE;
 }
 
@@ -256,9 +247,10 @@ void plantMine(char *ptrGrid,int row, int col){
 		|****|
 		+----+
 	Where:
-		CORNER = '+'
-		VEDGE  = '|'
-		HEDGE  = '-'		
+		CORNER  = '+'
+		VEDGE   = '|'
+		HEDGE   = '-'
+		NEWLINE = '\n'
 */
 void display(char const *p){
 	// top row:
@@ -267,15 +259,16 @@ void display(char const *p){
 		putchar(HEDGE);
 	}
 	putchar(CORNER);
-	printf("\n");
+	putchar(NEWLINE);
 	
 	// middle rows:
 	for(int i=0; i<maxRows; i++){
-		printf("%c", VEDGE);
+		putchar(VEDGE);
 		for(int j=0; j<maxCols; j++){
-			printf("%c", p[i * maxCols+j]);
+			putchar(p[i * maxCols+j]);
 		}
-		printf("%c\n", VEDGE);
+		putchar(VEDGE);
+		putchar(NEWLINE);
 	}
 	
 	//bottom row:
@@ -284,7 +277,7 @@ void display(char const *p){
 		putchar(HEDGE);
 	}
 	putchar(CORNER);
-	printf("\n");
+	putchar(NEWLINE);
 	
 	// flush output:
 	fflush(stdout);
@@ -317,11 +310,17 @@ int check(char const *f, char const *s){
 }
 
 /*
-	Cleanly exits program:
-		1) prints "error"
-		2) exits immediately
+	Prints "error" and exits immediately
 */
 void CleanExitError(void){
 	printf("error\n");
+	exit(0);
+}
+
+/*
+	Prints "lost" and exits immediately
+*/
+void CleanExitLost(void){
+	printf("lost\n");
 	exit(0);
 }
