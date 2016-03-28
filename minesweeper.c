@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 	
 	// first command MUST be 'g':
 	fflush(stdin);
-	if (scanf("%c %d %d", &cmd, &x, &y) == 1 
+	if (scanf("%c %d %d", &cmd, &x, &y) != 3 
 		|| cmd != 'g' 
 		|| (x < 0 && x > 100) 
 		|| (y < 0 && y > 100)
@@ -65,18 +65,13 @@ int main(int argc, char **argv){
 	printf("%c %d %d\n", cmd, x, y);
 
 	// second is 10 times 'b':
-	int count = 0;
-	
-	while (count < 10){
+	for(int count=0;count < 10;count++){
 		fflush(stdin);
 		scanf(" %c %d %d", &cmd, &x, &y);
 		
 		if(cmd=='b' && x>-1 && y>-1 && x<maxCols && y<maxRows){
 			// updated grid (row major)
 			plantMine(field,y,x);
-
-			// increment count:
-			count++;
 			
 			// print command:
 			printf("%c %d %d\n", cmd, x, y);
@@ -90,7 +85,7 @@ int main(int argc, char **argv){
 	//display(field);
 
 	// GAME ON!!  Keep going until an exit condition is met.
-	count = 0;
+	int count = 0;
 	int flag_count = 0;
 	while(1){
 		fflush(stdin);
