@@ -31,6 +31,11 @@ echo "**MISSING PARAMETER TESTS...starting";
 ./minesweeper < tests/initial-missingparam-1.in | diff - tests/error-line1.out
 ./minesweeper < tests/initial-missingparam-2.in | diff - tests/error-line1.out
 ./minesweeper < tests/initial-missingparam-3.in | diff - tests/error-line1.out
+./minesweeper < tests/initial-missingparam-4.in | diff - tests/error-line1.out
+./minesweeper < tests/missing-input.in | diff - tests/missing-input.out
+./minesweeper < tests/too-many-params-1.in | diff - tests/error-line1.out
+./minesweeper < tests/too-many-params-2.in | diff - tests/error-line1.out
+./minesweeper < tests/too-many-params-3.in | diff - tests/too-many-params-3.out
 echo "**MISSING PARAMETER TESTS...starting";
 
 echo "**MINE PLANTING TESTS...starting";

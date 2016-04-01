@@ -5,6 +5,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define COVERED 42
 #define MINE 66
@@ -31,12 +32,22 @@ void CleanExitLost(void);
 void printGridDebug(char const *p);
 
 int main(int argc, char **argv){
-	int x,y;
-	char cmd;
+	int x,y,nargs;
+	char cmd, buffer[14];
+	char *input;
+	char extra[5] = {0};
+	
+	// get input from user and check it is valid
+	input = fgets(buffer, 12, stdin);
+	// check for null
+	if(input=='\0') CleanExitError();
+	// parse
+	nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
+	// error checking
+	if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
 	
 	// first command MUST be 'g':
-	fflush(stdin);
-	if (scanf("%c %d %d", &cmd, &x, &y) != 3 
+	if (nargs != 3
 		|| cmd != 'g' 
 		|| (x < 0 && x > 100) 
 		|| (y < 0 && y > 100)
@@ -63,8 +74,10 @@ int main(int argc, char **argv){
 
 	// second is 10 times 'b':
 	for(int count=0; count < 10; count++){
-		fflush(stdin);
-		scanf(" %c %d %d", &cmd, &x, &y);
+		// get input from user and check it is valid
+		input = fgets(buffer, 12, stdin);
+		nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
+		if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
 		
 		if(cmd=='b' && x>-1 && y>-1 && x<maxCols && y<maxRows){
 			// updated grid (row major)
@@ -85,8 +98,11 @@ int main(int argc, char **argv){
 	int flag_count = 0;
 	
 	for(int count=0; count < maxRows * maxCols; count++){
-		fflush(stdin);
-		scanf(" %c %d %d", &cmd, &x, &y);
+		// get input from user and check it is valid
+		input = fgets(buffer, 12, stdin);
+		nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
+		if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
+		
 		if(cmd=='u'){
 			if(field[y*maxCols+x] != MINE && sweeper[y*maxCols+x] == COVERED){
 				// move value to game surface.
