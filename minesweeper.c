@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 	int x,y,nargs;
 	char cmd, buffer[14];
 	char *input;
-	char extra[5] = {0};
+	char extra[5];
 	
 	// get input from user and check it is valid
 	input = fgets(buffer, 12, stdin);
@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 	nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
 	// error checking
 	if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
-	
+
 	// first command MUST be 'g':
 	if (nargs != 3
 		|| cmd != 'g' 
@@ -76,7 +76,11 @@ int main(int argc, char **argv){
 	for(int count=0; count < 10; count++){
 		// get input from user and check it is valid
 		input = fgets(buffer, 12, stdin);
+		// check for null
+		if(input=='\0') CleanExitError();
+		// parse
 		nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
+		// error checking
 		if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
 		
 		if(cmd=='b' && x>-1 && y>-1 && x<maxCols && y<maxRows){
@@ -100,7 +104,11 @@ int main(int argc, char **argv){
 	for(int count=0; count < maxRows * maxCols; count++){
 		// get input from user and check it is valid
 		input = fgets(buffer, 12, stdin);
+		// check for null
+		if(input=='\0') CleanExitError();
+		// parse
 		nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
+		// error checking
 		if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
 		
 		if(cmd=='u'){

@@ -45,6 +45,8 @@ echo "**MINE PLANTING TESTS...starting";
 ./minesweeper < tests/not-enough-mines-8.in | diff - tests/not-enough-mines-8.out
 ./minesweeper < tests/not-enough-mines-9.in | diff - tests/not-enough-mines-9.out
 ./minesweeper < tests/too-many-mines.in | diff - tests/too-many-mines.out
+./minesweeper < tests/no-mines-non-square.in | diff - tests/no-mines-non-square.out
+./minesweeper < tests/non-square-grid.in | diff - tests/non-square-grid.out
 echo "**MINE PLANTING TESTS...completed!";
 
 echo "**WINNERS AND LOSERS TESTS...starting";
