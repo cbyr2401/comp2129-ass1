@@ -55,6 +55,8 @@ echo -n "Testing second input..."
 ./minesweeper < tests/not-enough-mines-9.in | diff - tests/not-enough-mines-9.out
 ./minesweeper < tests/too-many-mines.in | diff - tests/too-many-mines.out
 
+./minesweeper < tests/mine-same.in | diff - tests/mine-same.out
+
 echo "complete."
 echo -n "Testing third input..."
 # NOTE:  because the input is collected in the same way for each of the three,
@@ -63,5 +65,9 @@ echo -n "Testing third input..."
 ./minesweeper < tests/scott-example-won.in | diff - tests/scott-example-won.out
 ./minesweeper < tests/field10x10-lose.in | diff - tests/field10x10-lose.out
 ./minesweeper < tests/flag-all-lose.in | diff - tests/flag-all-lose.out
+./minesweeper < tests/flag-same.in | diff - tests/flag-same.out
+./minesweeper < tests/uncover-same.in | diff - tests/uncover-same.out
+./minesweeper < tests/flag-uncover.in | diff - tests/flag-uncover.out
+./minesweeper < tests/uncover-flag.in | diff - tests/uncover-flag.out
 
 echo "complete."

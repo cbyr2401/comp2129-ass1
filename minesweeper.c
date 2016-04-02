@@ -130,7 +130,7 @@ int main(int argc, char **argv){
 			}
 		}
 		else if(cmd=='f'){
-			if(sweeper[y*maxCols+x] == MINE|| sweeper[y*maxCols+x] == COVERED){
+			if(sweeper[y*maxCols+x] == MINE || sweeper[y*maxCols+x] == COVERED){
 				// flag square
 				sweeper[y*maxCols+x] = FLAG;
 				
