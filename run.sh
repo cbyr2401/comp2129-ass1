@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 echo "MINSWEEPER TESTING SCRIPT";
 echo "If there is no output, all tests passed successfully.";
 echo "running tests...";
@@ -50,9 +50,9 @@ echo "**MINE PLANTING TESTS...starting";
 echo "**MINE PLANTING TESTS...completed!";
 
 echo "**WINNERS AND LOSERS TESTS...starting";
-./minesweeper < tests/scott-example-won.in | diff - tests/scott-example-won.out
-./minesweeper <  tests/field10x10-lose.in | diff - tests/field10x10-lose.out
-./minesweeper < tests/flag-all-lose.in | diff - tests/flag-all-lose.out
+./minesweeper < ntests/scott-example-won.in | diff - ntests/scott-example-won.out
+./minesweeper < ntests/field10x10-lose.in | diff - ntests/field10x10-lose.out
+./minesweeper < ntests/flag-all-lose.in | diff - ntests/flag-all-lose.out
 echo "**WINNERS AND LOSERS TESTS...complete!";
 
 
