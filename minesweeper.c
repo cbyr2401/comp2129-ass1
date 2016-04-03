@@ -1,5 +1,5 @@
 /**
- * 	COMP2129 Assignment 1
+ * 	COMP2129 Assignment 1 (2016)
  * 	Cian Byrne
  *	cbyr2401
  */
@@ -82,6 +82,7 @@ int main(int argc, char **argv){
 		nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
 		// error checking
 		if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
+		if(x > maxCols || x < 0|| y > maxCols || y < 0) CleanExitError();
 		
 		if(cmd=='b' && x>-1 && y>-1 && x<maxCols && y<maxRows){
 			// updated grid (row major)
@@ -110,6 +111,7 @@ int main(int argc, char **argv){
 		nargs = sscanf(input, " %c %u %u %s", &cmd, &x, &y, extra);
 		// error checking
 		if(strlen(input)>10 || strlen(input)<2 || nargs != 3) CleanExitError();
+		if(x > maxCols || x < 0|| y > maxCols || y < 0) CleanExitError();
 		
 		if(cmd=='u'){
 			if(field[y*maxCols+x] != MINE && sweeper[y*maxCols+x] == COVERED){
@@ -119,7 +121,7 @@ int main(int argc, char **argv){
 				printf("%c %d %d\n", cmd, x, y);
 				display(sweeper);
 			}
-			else if(field[y*maxCols+x] == MINE){
+			else if(field[y*maxCols+x] == MINE && sweeper[y*maxCols+x] != FLAG){
 				// player uncovered a mine and has lost.
 				printf("%c %d %d\n", cmd, x, y);
 				CleanExitLost();
@@ -181,7 +183,6 @@ void printGridDebug(char const *p){
 	}
 	fflush(stdout);
 }
-
 
 /*
 	Initialize 2D matrix array (given as pointer) with given initial value.
@@ -306,7 +307,6 @@ void display(char const *p){
 	// flush output:
 	fflush(stdout);
 }
-
 
 /* 
 	Check to see if player has won the game:
